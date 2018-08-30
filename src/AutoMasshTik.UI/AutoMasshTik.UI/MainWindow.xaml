@@ -1,0 +1,13 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:AutoMasshTik.UI.ViewModels">
+  <Window.DataTemplates>
+    <DataTemplate DataType="{x:Type vm:ServerViewModel}">
+      <Grid ColumnDefinitions="100,80,*">
+        <TextBlock GridColumn="0" Text="{Binding Url}" />
+        <TextBlock GridColumn="1" Text="{Binding State}" />
+        <TextBlock GridColumn="2" Text="{Binding Error}" />
+      </Grid>
+    </DataTemplate>
+  </Window.DataTemplates>
+</Window>
