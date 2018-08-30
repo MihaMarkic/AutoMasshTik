@@ -25,6 +25,7 @@
     <PackageReference Include="PropertyChanged.Fody" Version="2.5.9" />
     <PackageReference Include="Righthand.Immutable" Version="1.0.2" />
     <PackageReference Include="Righthand.SharpRedux" Version="1.0.4" />
+    <!-- These guys below are required because avalonia uses older versions -->
     <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
     <PackageReference Include="System.IO.FileSystem.Primitives" Version="4.3.0" />
     <PackageReference Include="System.Net.NameResolution" Version="4.3.0" />
