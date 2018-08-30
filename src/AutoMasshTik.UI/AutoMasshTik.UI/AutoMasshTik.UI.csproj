@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
@@ -21,10 +21,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="PropertyChanged.Fody" Version="2.5.9" />
-    <PackageReference Include="Renci.SshNet.Async" Version="1.2.0" />
     <PackageReference Include="Righthand.Immutable" Version="1.0.2" />
     <PackageReference Include="Righthand.SharpRedux" Version="1.0.4" />
-    <PackageReference Include="System.Net.NameResolution" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\AutoMasshTik.Engine\AutoMasshTik.Engine.csproj" />

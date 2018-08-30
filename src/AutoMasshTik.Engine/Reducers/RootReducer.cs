@@ -35,11 +35,30 @@ namespace AutoMasshTik.Engine.Reducers
                 case PortChangedAction portChangedAction:
                     result = state.Clone(port: portChangedAction.Port);
                     break;
-                case StartUpdateAction _:
-                    result = state.Clone(isUpdating: true);
+                case StartUpdateAction startUpdateAction:
+                    {
+                        string operationInProgress;
+                        switch (startUpdateAction.Mode)
+                        {
+                            case UpdateMode.Connection:
+                                operationInProgress = "Testing connection";
+                                break;
+                            case UpdateMode.Firmware:
+                                operationInProgress = "Upgrading firmware";
+                                break;
+                            case UpdateMode.Packages:
+                                operationInProgress = "Upgrading packages";
+                                break;
+                            default:
+                                operationInProgress = "???";
+                                break;
+                        }
+                        var servers = state.Servers.Select(s => s.Clone(state: ServerUpdateState.Idle, error: "")).ToArray();
+                        result = state.Clone(servers: servers, isUpdating: true, operationInProgress: operationInProgress);
+                    }
                     break;
                 case StopUpdateAction _:
-                    result = state.Clone(isUpdating: false);
+                    result = state.Clone(isUpdating: false, operationInProgress: "");
                     break;
                 case StartUpdatingServerAction startUpdatingServerAction:
                     {

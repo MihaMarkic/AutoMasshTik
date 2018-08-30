@@ -47,6 +47,7 @@ namespace AutoMasshTik.UI
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = new Binding(nameof(ServerViewModel.ServerState)) { Converter = ServerUpdateStateToStringConverter.Default },
+                        [!TextBlock.ForegroundProperty] = new Binding(nameof(ServerViewModel.ServerState)) {  Converter = ServerUpdateStateToBrushConverter.Default },
                     }.SetGridColumn(1),
                     new TextBlock
                     {
@@ -90,6 +91,7 @@ namespace AutoMasshTik.UI
                     new TextBox
                     {
                         [!TextBox.TextProperty] = new Binding(nameof(ViewModel.Username), BindingMode.TwoWay),
+                        [!TextBox.BorderBrushProperty] = new Binding(nameof(ViewModel.Username)) { Converter = NotEmptyRequiredToBrushConverter.Default },
                         Watermark = "Username",
                         [!TextBlock.IsEnabledProperty] = new Binding(nameof(ViewModel.IsUpdating)) { Converter = NegateConverter.Default }
 
@@ -97,6 +99,7 @@ namespace AutoMasshTik.UI
                      new TextBox
                      {
                          [!TextBox.TextProperty] = new Binding(nameof(ViewModel.Password), BindingMode.TwoWay),
+                         [!TextBox.BorderBrushProperty] = new Binding(nameof(ViewModel.Password)) { Converter = NotEmptyRequiredToBrushConverter.Default },
                          Watermark = "Password",
                          Margin = new Thickness(0, 5, 0, 0),
                          [!TextBlock.IsEnabledProperty] = new Binding(nameof(ViewModel.IsUpdating)) { Converter = NegateConverter.Default }
@@ -111,13 +114,23 @@ namespace AutoMasshTik.UI
                          [!TextBlock.IsEnabledProperty] = new Binding(nameof(ViewModel.IsUpdating)) { Converter = NegateConverter.Default }
                      }.AddClass("input")
                     ),
-                new ProgressBar
+                new StackPanel
                 {
                     VerticalAlignment  = VerticalAlignment.Center,
-                    [!ProgressBar.ValueProperty] = new Binding(nameof(ViewModel.ServerModels), BindingMode.OneWay) {  Converter = ServersToProgressConverter.Default },
-                    [!ProgressBar.MaximumProperty] = new Binding(nameof(ViewModel.ServerModels), BindingMode.OneWay) { Converter = ServersToProgressMaxConverter.Default },
-                    [!ProgressBar.IsVisibleProperty] = new Binding(nameof(ViewModel.IsUpdating), BindingMode.OneWay)
-                }.SetGridColumn(2).SetGridRow(1),
+                    Orientation = Orientation.Vertical,
+                    [!StackPanel.IsVisibleProperty] = new Binding(nameof(ViewModel.IsUpdating), BindingMode.OneWay)
+                }.SetGridColumn(2).SetGridRow(1)
+                .AddChildren(
+                    new TextBlock
+                    {
+                        [!TextBlock.TextProperty] = new Binding(nameof(ViewModel.OperationInProgress)),
+                        HorizontalAlignment = HorizontalAlignment.Center
+                    },
+                    new ProgressBar
+                    {
+                        [!ProgressBar.ValueProperty] = new Binding(nameof(ViewModel.ServerModels), BindingMode.OneWay) {  Converter = ServersToProgressConverter.Default },
+                        [!ProgressBar.MaximumProperty] = new Binding(nameof(ViewModel.ServerModels), BindingMode.OneWay) { Converter = ServersToProgressMaxConverter.Default }
+                    }),
                 new StackPanel
                 {
                     Orientation = Orientation.Vertical,
@@ -125,7 +138,15 @@ namespace AutoMasshTik.UI
                 .AddChildren(
                     new Button
                     {
+                        Content = "Test connection",
+                        [!Button.IsVisibleProperty] = new Binding(nameof(ViewModel.IsUpdating)) { Converter = NegateConverter.Default },
+                        [!Button.CommandProperty] = new Binding(nameof(ViewModel.StartUpdateCommand)),
+                        CommandParameter = UpdateMode.Connection
+                    },
+                    new Button
+                    {
                         Content = "Update Packages",
+                        Margin = new Thickness(0, 5, 0, 0),
                         [!Button.IsVisibleProperty] = new Binding(nameof(ViewModel.IsUpdating)) { Converter = NegateConverter.Default },
                         [!Button.CommandProperty] = new Binding(nameof(ViewModel.StartUpdateCommand)),
                         CommandParameter = UpdateMode.Packages

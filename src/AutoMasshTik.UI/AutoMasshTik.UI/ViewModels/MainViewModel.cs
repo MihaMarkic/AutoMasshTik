@@ -23,6 +23,7 @@ namespace AutoMasshTik.UI.ViewModels
         public string Password { get; private set; }
         public int Port { get; private set; }
         public  bool IsUpdating { get; private set; }
+        public string OperationInProgress { get; private set; }
         public ObservableCollection<ServerViewModel> Servers { get; }
         public RelayCommand<UpdateMode> StartUpdateCommand { get; }
         public RelayCommand StopUpdateCommand { get; }
@@ -48,7 +49,7 @@ namespace AutoMasshTik.UI.ViewModels
             cts = new CancellationTokenSource();
             try
             {
-                await updater.UpdateAsync(state.Servers, Username, Password, Port, useCredentials: true, cts.Token);
+                await updater.UpdateAsync(mode, state.Servers, Username, Password, Port, useCredentials: true, cts.Token);
             }
             catch (Exception ex)
             {
@@ -80,6 +81,7 @@ namespace AutoMasshTik.UI.ViewModels
                 Password = e.State.Password;
                 IsUpdating = e.State.IsUpdating;
                 Port = e.State.Port;
+                OperationInProgress = e.State.OperationInProgress;
             }
             finally
             {

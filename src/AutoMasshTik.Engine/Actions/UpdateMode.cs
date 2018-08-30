@@ -7,6 +7,7 @@ namespace AutoMasshTik.Engine.Actions
     public enum UpdateMode
     {
         Packages,
-        Firmware
+        Firmware,
+        Connection
     }
 }

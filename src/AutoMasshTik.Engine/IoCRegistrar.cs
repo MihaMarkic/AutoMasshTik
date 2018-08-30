@@ -5,7 +5,6 @@ using AutoMasshTik.Engine.Services.Abstract;
 using AutoMasshTik.Engine.Services.Implementation;
 using AutoMasshTik.Engine.States;
 using Sharp.Redux;
-using System;
 using System.Linq;
 
 namespace AutoMasshTik.Engine
@@ -25,11 +24,12 @@ namespace AutoMasshTik.Engine
 #endif
             builder.Register<IAppReduxDispatcher>(ctx => new AppReduxDispatcher(
                 initialState: new RootState(
-                    servers: servers, //new Server[0],
+                    servers: new Server[0],
                     isUpdating: false,
-                    username: "xxx",
-                    password: default,
-                    port: 22
+                    username: "",
+                    password: "",
+                    port: 22,
+                    operationInProgress: ""
                 ),
                 reducer: ctx.Resolve<IReduxReducer<RootState>>())).SingleInstance();
             return builder;
