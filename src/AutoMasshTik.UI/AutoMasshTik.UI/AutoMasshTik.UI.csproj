@@ -3,6 +3,8 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
+    <RuntimeIdentifiers>win10-x64</RuntimeIdentifiers>
+    <AssemblyName>AutoMasshTik</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="**\*.xaml.cs">
@@ -23,6 +25,10 @@
     <PackageReference Include="PropertyChanged.Fody" Version="2.5.9" />
     <PackageReference Include="Righthand.Immutable" Version="1.0.2" />
     <PackageReference Include="Righthand.SharpRedux" Version="1.0.4" />
+    <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
+    <PackageReference Include="System.IO.FileSystem.Primitives" Version="4.3.0" />
+    <PackageReference Include="System.Net.NameResolution" Version="4.3.0" />
+    <PackageReference Include="System.Net.Sockets" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\AutoMasshTik.Engine\AutoMasshTik.Engine.csproj" />
