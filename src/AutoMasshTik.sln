@@ -5,9 +5,9 @@ VisualStudioVersion = 15.0.28010.2016
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoMasshTik.UI", "AutoMasshTik.UI\AutoMasshTik.UI.csproj", "{26976BE7-BA25-4182-8DD8-B404171CB927}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoMasshTik.Engine", "..\AutoMasshTik.Engine\AutoMasshTik.Engine.csproj", "{04C39533-3612-4BEA-B0FF-7671CF6FCC05}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoMasshTik.Engine", "AutoMasshTik.Engine\AutoMasshTik.Engine.csproj", "{04C39533-3612-4BEA-B0FF-7671CF6FCC05}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoMasshTik.Konsole", "..\AutoMasshTik.Konsole\AutoMasshTik.Konsole.csproj", "{1972C5AC-4ED8-4B6B-82C9-7AA909B6C7DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoMasshTik.Konsole", "AutoMasshTik.Konsole\AutoMasshTik.Konsole.csproj", "{1972C5AC-4ED8-4B6B-82C9-7AA909B6C7DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
