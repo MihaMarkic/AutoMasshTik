@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>AutoMasshTik</id>
+    <version>0.9.0</version>
+    <title>AutoMasshTik</title>
+    <authors>Righthand</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Mass updater for MikroTik routerboards' firmware and packages</description>
+  </metadata>
+  <files>
+
+  </files>
+</package>

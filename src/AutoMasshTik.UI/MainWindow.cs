@@ -7,6 +7,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
@@ -68,7 +69,6 @@ namespace AutoMasshTik.UI
                         new Setter(TextBox.BorderBrushProperty, defaultBorderBrush),
                         new Setter(TextBox.UseFloatingWatermarkProperty, true)
                     ));
-            //AvaloniaXamlLoader.Load(this);
             Content = new Grid
             {
                 RowDefinitions = new RowDefinitions("Auto, *, Auto"),
@@ -82,6 +82,7 @@ namespace AutoMasshTik.UI
                     AcceptsReturn = true,
                     Watermark = "Addresses",
                     [!Button.IsEnabledProperty] = new Binding(nameof(ViewModel.IsUpdating)) { Converter = NegateConverter.Default }
+                    
                 }.AddClass("input").SetGridRowSpan(3),
                 new StackPanel
                 {
@@ -89,9 +90,9 @@ namespace AutoMasshTik.UI
                 .AddChildren(
                     new TextBox
                     {
+                        Watermark = "Username",
                         [!TextBox.TextProperty] = new Binding(nameof(ViewModel.Username), BindingMode.TwoWay),
                         [!TextBox.BorderBrushProperty] = new Binding(nameof(ViewModel.Username)) { Converter = NotEmptyRequiredToBrushConverter.Default },
-                        Watermark = "Username",
                         [!TextBlock.IsEnabledProperty] = new Binding(nameof(ViewModel.IsUpdating)) { Converter = NegateConverter.Default }
 
                     }.AddClass("input"),
@@ -103,9 +104,9 @@ namespace AutoMasshTik.UI
                     .AddChildren(
                          new TextBox
                          {
+                             Watermark = "Password",
                              [!TextBox.TextProperty] = new Binding(nameof(ViewModel.Password), BindingMode.TwoWay),
                              [!TextBox.BorderBrushProperty] = new Binding(nameof(ViewModel.Password)) { Converter = NotEmptyRequiredToBrushConverter.Default },
-                             Watermark = "Password",
                              Margin = new Thickness(0, 5, 0, 0),
                              [!TextBox.PasswordCharProperty] = new Binding(nameof(ViewModel.ShowPassword)) { Converter = ShowPasswordToCharConverter.Default },
                              [!TextBlock.IsEnabledProperty] = new Binding(nameof(ViewModel.IsUpdating)) { Converter = NegateConverter.Default }
@@ -113,14 +114,15 @@ namespace AutoMasshTik.UI
                          new Button
                          {
                              [!Button.ContentProperty] = new Binding(nameof(ViewModel.ShowPassword)) { Converter = ShowPasswordToToggleButtonCaptionConverter.Default },
-                             Margin = new Thickness(2, 0, 0, 0),
+                             Margin = new Thickness(2, 5, 0, 0),
+                             MinWidth = 50,
                              [!Button.CommandProperty] = new Binding(nameof(ViewModel.ToggleShowPasswordCommand))
                          }.SetGridColumn(1)
                     ),
                      new TextBox
                      {
-                         [!TextBox.TextProperty] = new Binding(nameof(ViewModel.Port), BindingMode.TwoWay) { Converter = IntToStringConverter.Default },
                          Watermark = "Port",
+                         [!TextBox.TextProperty] = new Binding(nameof(ViewModel.Port), BindingMode.TwoWay) { Converter = IntToStringConverter.Default },
                          Margin = new Thickness(0, 5, 0, 0),
                          Width = 40,
                          HorizontalAlignment = HorizontalAlignment.Left,
