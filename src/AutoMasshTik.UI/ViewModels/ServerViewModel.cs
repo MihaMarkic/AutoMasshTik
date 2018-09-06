@@ -10,7 +10,7 @@ namespace AutoMasshTik.UI.ViewModels
         public string Url { get; private set; }
         public ServerUpdateState ServerState { get; private set; }
         public string Error { get; private set; }
-        bool isUpdatingState;
+        //bool isUpdatingState;
         public ServerViewModel(Server state)
         {
             State = state;
@@ -18,7 +18,7 @@ namespace AutoMasshTik.UI.ViewModels
         }
         public void Update(Server state)
         {
-            isUpdatingState = true;
+            //isUpdatingState = true;
             try
             {
                 State = state;
@@ -28,7 +28,7 @@ namespace AutoMasshTik.UI.ViewModels
             }
             finally
             {
-                isUpdatingState = false;
+                //isUpdatingState = false;
             }
         }
     }

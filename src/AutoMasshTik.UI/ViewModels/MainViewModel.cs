@@ -24,9 +24,11 @@ namespace AutoMasshTik.UI.ViewModels
         public int Port { get; private set; }
         public  bool IsUpdating { get; private set; }
         public string OperationInProgress { get; private set; }
+        public bool ShowPassword { get; private set; }
         public ObservableCollection<ServerViewModel> Servers { get; }
         public RelayCommand<UpdateMode> StartUpdateCommand { get; }
         public RelayCommand StopUpdateCommand { get; }
+        public RelayCommand ToggleShowPasswordCommand { get;  }
         bool isUpdatingState;
         CancellationTokenSource cts;
         RootState state;
@@ -40,7 +42,12 @@ namespace AutoMasshTik.UI.ViewModels
             Servers = new ObservableCollection<ServerViewModel>();
             StartUpdateCommand = new RelayCommand<UpdateMode>(StartUpdate, m => !IsUpdating);
             StopUpdateCommand = new RelayCommand(StopUpdate, () => IsUpdating);
+            ToggleShowPasswordCommand = new RelayCommand(ToggleShowPassword);
             this.appReduxDispatcher.StateChanged += AppReduxDispatcher_StateChanged;
+        }
+        void ToggleShowPassword()
+        {
+            appReduxDispatcher.Dispatch(new ToggleShowPasswordAction());
         }
         async void StartUpdate(UpdateMode mode)
         {
@@ -50,10 +57,6 @@ namespace AutoMasshTik.UI.ViewModels
             try
             {
                 await updater.UpdateAsync(mode, state.Servers, Username, Password, Port, useCredentials: true, cts.Token);
-            }
-            catch (Exception ex)
-            {
-                
             }
             finally
             {
@@ -82,6 +85,7 @@ namespace AutoMasshTik.UI.ViewModels
                 IsUpdating = e.State.IsUpdating;
                 Port = e.State.Port;
                 OperationInProgress = e.State.OperationInProgress;
+                ShowPassword = state.ShowPassword;
             }
             finally
             {

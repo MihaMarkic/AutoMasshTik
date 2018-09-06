@@ -4,12 +4,12 @@ using System.Globalization;
 
 namespace AutoMasshTik.UI.Converters
 {
-    public class NegateConverter : IValueConverter
+    public class ShowPasswordToToggleButtonCaptionConverter : IValueConverter
     {
-        public static NegateConverter Default { get; } = new NegateConverter();
+        public static ShowPasswordToToggleButtonCaptionConverter Default { get; } = new ShowPasswordToToggleButtonCaptionConverter();
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return !(bool)value;
+            return ((bool)value) ? "Hide" : "Show";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

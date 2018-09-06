@@ -8,7 +8,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Layout;
-using Avalonia.Markup.Xaml.Data;
 using Avalonia.Media;
 using Avalonia.Styling;
 using PropertyChanged;
@@ -34,7 +33,7 @@ namespace AutoMasshTik.UI
 
         FuncDataTemplate<ServerViewModel> CreateServerTemplate()
         {
-            return new FuncDataTemplate<ServerViewModel>(x =>
+            return new FuncDataTemplate<ServerViewModel>(vm =>
 
                 new Grid
                 {
@@ -42,16 +41,16 @@ namespace AutoMasshTik.UI
                 }.AddChildren(
                     new TextBlock
                     {
-                        [!TextBlock.TextProperty] = new Binding(nameof(ServerViewModel.Url)),
+                        [!TextBlock.TextProperty] = new Binding(nameof(vm.Url)),
                     },
                     new TextBlock
                     {
-                        [!TextBlock.TextProperty] = new Binding(nameof(ServerViewModel.ServerState)) { Converter = ServerUpdateStateToStringConverter.Default },
-                        [!TextBlock.ForegroundProperty] = new Binding(nameof(ServerViewModel.ServerState)) {  Converter = ServerUpdateStateToBrushConverter.Default },
+                        [!TextBlock.TextProperty] = new Binding(nameof(vm.ServerState)) { Converter = ServerUpdateStateToStringConverter.Default },
+                        [!TextBlock.ForegroundProperty] = new Binding(nameof(vm.ServerState)) {  Converter = ServerUpdateStateToBrushConverter.Default },
                     }.SetGridColumn(1),
                     new TextBlock
                     {
-                        [!TextBlock.TextProperty] = new Binding(nameof(ServerViewModel.Error)),
+                        [!TextBlock.TextProperty] = new Binding(nameof(vm.Error)),
                     }.SetGridColumn(2)
                 ));
         }
@@ -61,7 +60,7 @@ namespace AutoMasshTik.UI
             Height = MinHeight = 300;
             Width = MinWidth = 830;
             SolidColorBrush defaultBorderBrush = new SolidColorBrush(Colors.Black, opacity: .4);
-            double defaultBorderThickness = .5;
+            var defaultBorderThickness = new Thickness(.5);
             Styles.Add(
                 new Style(s => s.OfType<TextBox>().Class("input"))
                     .AddSetters(
@@ -96,14 +95,28 @@ namespace AutoMasshTik.UI
                         [!TextBlock.IsEnabledProperty] = new Binding(nameof(ViewModel.IsUpdating)) { Converter = NegateConverter.Default }
 
                     }.AddClass("input"),
-                     new TextBox
-                     {
-                         [!TextBox.TextProperty] = new Binding(nameof(ViewModel.Password), BindingMode.TwoWay),
-                         [!TextBox.BorderBrushProperty] = new Binding(nameof(ViewModel.Password)) { Converter = NotEmptyRequiredToBrushConverter.Default },
-                         Watermark = "Password",
-                         Margin = new Thickness(0, 5, 0, 0),
-                         [!TextBlock.IsEnabledProperty] = new Binding(nameof(ViewModel.IsUpdating)) { Converter = NegateConverter.Default }
-                     }.AddClass("input"),
+                    new Grid
+                    {
+                        ColumnDefinitions = new ColumnDefinitions("*, Auto"),
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                    }
+                    .AddChildren(
+                         new TextBox
+                         {
+                             [!TextBox.TextProperty] = new Binding(nameof(ViewModel.Password), BindingMode.TwoWay),
+                             [!TextBox.BorderBrushProperty] = new Binding(nameof(ViewModel.Password)) { Converter = NotEmptyRequiredToBrushConverter.Default },
+                             Watermark = "Password",
+                             Margin = new Thickness(0, 5, 0, 0),
+                             [!TextBox.PasswordCharProperty] = new Binding(nameof(ViewModel.ShowPassword)) { Converter = ShowPasswordToCharConverter.Default },
+                             [!TextBlock.IsEnabledProperty] = new Binding(nameof(ViewModel.IsUpdating)) { Converter = NegateConverter.Default }
+                         }.AddClass("input"),
+                         new Button
+                         {
+                             [!Button.ContentProperty] = new Binding(nameof(ViewModel.ShowPassword)) { Converter = ShowPasswordToToggleButtonCaptionConverter.Default },
+                             Margin = new Thickness(2, 0, 0, 0),
+                             [!Button.CommandProperty] = new Binding(nameof(ViewModel.ToggleShowPasswordCommand))
+                         }.SetGridColumn(1)
+                    ),
                      new TextBox
                      {
                          [!TextBox.TextProperty] = new Binding(nameof(ViewModel.Port), BindingMode.TwoWay) { Converter = IntToStringConverter.Default },
@@ -167,7 +180,7 @@ namespace AutoMasshTik.UI
                     }),
                 new ListBox
                 {
-                    BorderThickness = .8,
+                    BorderThickness = new Thickness(.8),
                     BorderBrush = defaultBorderBrush,
                     [!ListBox.ItemsProperty] = new Binding(nameof(ViewModel.Servers)),
                     ItemTemplate = CreateServerTemplate(),

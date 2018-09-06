@@ -1,6 +1,5 @@
-﻿using AutoMasshTik.Engine.Models;
-using AutoMasshTik.UI.ViewModels;
-using Avalonia.Markup;
+﻿using AutoMasshTik.UI.ViewModels;
+using Avalonia.Data.Converters;
 using System;
 using System.Globalization;
 

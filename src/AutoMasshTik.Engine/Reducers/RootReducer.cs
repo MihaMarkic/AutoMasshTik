@@ -84,6 +84,9 @@ namespace AutoMasshTik.Engine.Reducers
                         result = state.Clone(servers: servers);
                     }
                     break;
+                case ToggleShowPasswordAction _:
+                    result = state.Clone(showPassword: !state.ShowPassword);
+                    break;
                 default:
                     return Task.FromResult(state);
             }

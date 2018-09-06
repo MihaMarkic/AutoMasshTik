@@ -29,7 +29,8 @@ namespace AutoMasshTik.Engine
                     username: "",
                     password: "",
                     port: 22,
-                    operationInProgress: ""
+                    operationInProgress: "",
+                    showPassword: false
                 ),
                 reducer: ctx.Resolve<IReduxReducer<RootState>>())).SingleInstance();
             return builder;
