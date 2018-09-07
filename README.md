@@ -12,9 +12,21 @@ AutoMasshTik is a cross platform tool that allows network admins that run networ
 
 ## Installation
 
-Installation is simple - after downloading and running setup.exe software will be installed (in fact it is quite portable - it runs independently of .NET framework installed on the machine). Shortcut will be placed in Start menu and Desktop. Software automatically checks for updates at start.
+### Windows 10 x64
 
-Tech
+Installation is simple - after downloading and running [setup.exe](https://automasshtik.rthand.com/Setup.exe) software will be installed (in fact it is quite portable - it runs independently of .NET framework installed on the machine). Shortcut will be placed in Start menu and Desktop. Software automatically checks for updates at start.
+
+### MacOS
+
+Currently distribution is not supported.
+
+Download executables from [releases](https://github.com/MihaMarkic/AutoMasshTik/releases) on Github, place them in a directory and run AutoMasshTik.
+
+## Linux
+
+Eventually. Needs some testing.
+
+## Tech
 
 Based on these technologies
 

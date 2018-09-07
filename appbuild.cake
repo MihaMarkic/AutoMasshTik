@@ -20,11 +20,14 @@ var uiRoot = solutionRoot + Directory("AutoMasshTik.UI");
 var ui = uiRoot + File("AutoMasshTik.UI.csproj");
 var deploymentRoot = Directory("./deployment");
 var win10DeploymentRoot = deploymentRoot + Directory("win10-x64");
+var macOSeploymentRoot = deploymentRoot + Directory("macOS-x64");
+var linuxDeploymentRoot = deploymentRoot + Directory("linux-x64");
 var nuSpecTemplate = win10DeploymentRoot + File("AutoMasshTik.nuspec.Template");
 var nuSpec = win10DeploymentRoot + File("AutoMasshTik.nuspec");
 var win10PublishRoot = win10DeploymentRoot + Directory("files");
 var win10OutputRoot = win10DeploymentRoot + Directory("output");
 var win10Nupgk = win10DeploymentRoot + Directory("nupkg");
+var macOSPublishRoot = macOSeploymentRoot + Directory("files");
 const string NuspecFileTemplate = "\t<file src=\".\\files\\{1}{0}\" target=\"lib\\net45\\{1}{0}\" />";
 
 string GetRuntime(Runtime runtime)
@@ -42,10 +45,15 @@ string GetDeploymentRoot(Runtime runtime)
 	switch (runtime)
 	{
 		case Runtime.Win10: return win10DeploymentRoot;
-		//case Runtime.OSX: return "osx-x64"; break;
-		//case Runtime.Linux: return "linux-x64"; break;
+		case Runtime.OSX: return macOSeploymentRoot;
+		case Runtime.Linux: return linuxDeploymentRoot;
 		default: throw new ArgumentException(nameof(runtime), $"Unknown runtime {runtime}");
 	}
+}
+string GetPublishRoot(Runtime runtime)
+{
+	var deploymentRoot = GetDeploymentRoot(runtime);
+	return deploymentRoot + Directory("/files");
 }
 
 void SignFiles(IEnumerable<FilePath> files)
@@ -104,7 +112,8 @@ Task("Test")
 Task("Publish")
 	.IsDependentOn("Test")
     .Does(() =>{
-		CleanDirectory(win10PublishRoot);
+		var publishRoot = GetPublishRoot(runtime);
+		CleanDirectory(publishRoot);
 		string targetRuntime = GetRuntime(runtime);
 		Information($"Publishing {runtime}");
 		var settings = new DotNetCorePublishSettings
@@ -112,13 +121,16 @@ Task("Publish")
 			Configuration = Configuration,
 			SelfContained = true,
 			Runtime = targetRuntime,
-			OutputDirectory = win10PublishRoot,
+			OutputDirectory = publishRoot,
 			//Can't have this when buillding using runtime
 			//NoRestore = true,
 			//NoBuild = true,
 		};
 		DotNetCorePublish(ui, settings);
-		AddIcon();
+		if (runtime == Runtime.Win10)
+		{
+			AddIcon();
+		}
     });
 
 void AddIcon()
