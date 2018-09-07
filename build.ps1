@@ -38,7 +38,7 @@ https://cakebuild.net
 [CmdletBinding()]
 Param(
     [string]$Script = "appbuild.cake",
-	[ValidateSet("Clean", "Restore", "Build", "Default", "Test", "GetVersion", "SetVersion", "IncBuild", "SetTag", "Publish", "NuSpec", "Nupkg", "Squirrel")]
+	[ValidateSet("Clean", "Restore", "Build", "Default", "Test", "GetVersion", "SetVersion", "IncVersion", "SetTag", "Publish", "NuSpec", "Nupkg", "Squirrel")]
     [string]$Target,
     [string]$Configuration,
     [ValidateSet("Quiet", "Minimal", "Normal", "Verbose", "Diagnostic")]
@@ -50,7 +50,8 @@ Param(
     [Parameter(Position=0,Mandatory=$false,ValueFromRemainingArguments=$true)]
     [string[]]$ScriptArgs,
 	[ValidateSet("Win10", "OSX", "Linux")]
-    [string]$Runtime
+    [string]$Runtime,
+	[string]$Thumbprint
 )
 
 # Attempt to set highest encryption available for SecurityProtocol.
@@ -238,6 +239,7 @@ if ($Verbosity) { $cakeArguments += "-verbosity=$Verbosity" }
 if ($ShowDescription) { $cakeArguments += "-showdescription" }
 if ($DryRun) { $cakeArguments += "-dryrun" }
 if ($Runtime) { $cakeArguments += "-runtime=$Runtime" }
+if ($Thumbprint) { $cakeArguments += "-thumbprint=$Thumbprint" }
 $cakeArguments += $ScriptArgs
 
 # Start Cake

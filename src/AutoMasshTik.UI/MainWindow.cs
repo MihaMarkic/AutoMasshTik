@@ -55,9 +55,18 @@ namespace AutoMasshTik.UI
                     }.SetGridColumn(2)
                 ));
         }
+        string NiceVersion
+        {
+            get
+            {
+                var ver = typeof(MainWindow).Assembly.GetName().Version;
+                return $"{ver.Major}.{ver.Minor}.{ver.Build}";
+            }
+
+        }
         void InitializeComponent()
         {
-            Title = "AutoMasshTik";
+            Title = $"AutoMasshTik {NiceVersion}";
             Height = MinHeight = 300;
             Width = MinWidth = 830;
             SolidColorBrush defaultBorderBrush = new SolidColorBrush(Colors.Black, opacity: .4);
@@ -71,7 +80,7 @@ namespace AutoMasshTik.UI
                     ));
             Content = new Grid
             {
-                RowDefinitions = new RowDefinitions("Auto, *, Auto"),
+                RowDefinitions = new RowDefinitions("Auto, *, Auto, Auto"),
                 ColumnDefinitions = new ColumnDefinitions("200,5,300,5,*"),
                 Margin = new Thickness(10)
             }
@@ -186,7 +195,13 @@ namespace AutoMasshTik.UI
                     BorderBrush = defaultBorderBrush,
                     [!ListBox.ItemsProperty] = new Binding(nameof(ViewModel.Servers)),
                     ItemTemplate = CreateServerTemplate(),
-                }.SetGridRowSpan(3).SetGridColumn(4)
+                }.SetGridRowSpan(3).SetGridColumn(4),
+                new TextBlock
+                {
+                    Text = "New version available, restart to update",
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    [!TextBlock.IsVisibleProperty] = new Binding(nameof(ViewModel.NewVersionAvailable))
+                }.SetGridRow(3).SetGridColumn(2)
                 );
         }
         protected override void HandleClosed()

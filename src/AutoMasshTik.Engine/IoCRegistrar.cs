@@ -17,6 +17,7 @@ namespace AutoMasshTik.Engine
             ContainerBuilder builder = new ContainerBuilder();
             builder.RegisterType<RootReducer>().As<IReduxReducer<RootState>>().SingleInstance();
             builder.RegisterType<Updater>().As<IUpdater>();
+            builder.RegisterType<WinAppUpdater>().As<IAppUpdater>().SingleInstance();
             // register root dispatcher and initialize state
 #if DEBUG
             var servers = Enumerable.Range(1, 50).Select(i => new Server(i-1, $"xxx", false, Core.ServerUpdateState.Idle, null)).ToArray();

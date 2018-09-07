@@ -3,9 +3,7 @@
 
 var target = Argument("target", "Default");
 var runtime = Argument<Runtime>("runtime", Runtime.Win10);
-
-string versionText = "0.9.1";
-const string CertificateThumbprint = "26 4a 7f a4 66 43 45 22 57 18 2b 4e c4 d7 b7 e8 32 3d a9 d6";
+var certificateThumbprint = Argument("thumbprint", EnvironmentVariable("SignatureCertThumbprint"));
 
 enum Runtime
 {
@@ -51,12 +49,17 @@ string GetDeploymentRoot(Runtime runtime)
 
 void SignFiles(IEnumerable<FilePath> files)
 {
+	if (string.IsNullOrWhiteSpace(certificateThumbprint))
+	{
+		Information("No thumbprint to sign");
+		return;
+	}
 	var validFiles = files.Where(f => 
 		string.Equals(f.GetExtension(), ".exe", StringComparison.OrdinalIgnoreCase)
 		|| string.Equals(f.GetExtension(), ".dll", StringComparison.OrdinalIgnoreCase));
     Sign(validFiles, new SignToolSignSettings {
             TimeStampUri = new Uri("http://timestamp.digicert.com"),
-            CertThumbprint = CertificateThumbprint.Replace(" ", "")
+            CertThumbprint = certificateThumbprint.Replace(" ", "")
     });
 }
 
@@ -74,7 +77,8 @@ Task("Build")
     .Does(() =>{
 		var settings = new DotNetCoreBuildSettings
 		 {
-			 Configuration = Configuration
+			 Configuration = Configuration,
+			 NoRestore = true,
 		 };
 		DotNetCoreBuild(solution, settings);
     });
@@ -99,6 +103,7 @@ Task("Test")
 Task("Publish")
 	.IsDependentOn("Test")
     .Does(() =>{
+		CleanDirectory(win10PublishRoot);
 		string targetRuntime = GetRuntime(runtime);
 		Information($"Publishing {runtime}");
 		var settings = new DotNetCorePublishSettings
@@ -106,6 +111,7 @@ Task("Publish")
 			Configuration = Configuration,
 			SelfContained = true,
 			Runtime = targetRuntime,
+			OutputDirectory = win10PublishRoot,
 			//Can't have this when buillding using runtime
 			//NoRestore = true,
 			//NoBuild = true,
@@ -143,20 +149,20 @@ Task("NuSpec")
                 {"ns", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd"}
             }
     };
-    XmlPoke(nuSpec, "/ns:package/ns:metadata/ns:version", versionText, settings);
+    XmlPoke(nuSpec, "/ns:package/ns:metadata/ns:version", GetVersion(), settings);
     List<string> files = new List<string>();
     ImportExe(files, win10PublishRoot);
     ImportFiles(files, win10PublishRoot, "*");
     var absoluteFiles = files.Select(f => (win10PublishRoot + File(f)).Path);
-    SignFiles(absoluteFiles);
-    //ImportFiles(files, WpfClientRelease, "config");
-    var relativeFiles = files.Select(f => string.Format(NuspecFileTemplate, f, ""));
-	files.Clear();
-	ImportFiles(files, win10PublishRoot + Directory("publish"), "*");
-	absoluteFiles = files.Select(f => (win10PublishRoot + Directory("publish") + File(f)).Path);
-	// takes too long to sign all these
-	//SignFiles(absoluteFiles);
-	relativeFiles = files.Select(f => string.Format(NuspecFileTemplate, f, "publish\\"));
+    //SignFiles(absoluteFiles.ToArray());
+    var relativeFiles = files.Select(f => string.Format(NuspecFileTemplate, f, "")).ToArray();
+
+	//var publishFiles = new List<string>();
+	//ImportFiles(publishFiles, win10PublishRoot + Directory("publish"), "*");
+	//var publishAbsoluteFiles = publishFiles.Select(f => (win10PublishRoot + Directory("publish") + File(f)).Path);
+	//// takes too long to sign all these
+	////SignFiles(absoluteFiles);
+	//var publishRelativeFiles = publishFiles.Select(f => string.Format(NuspecFileTemplate, f, "publish\\"));
     XmlPoke(nuSpec, "/ns:package/ns:files", "\n" + string.Join("\n", relativeFiles) + "\n", settings);
 });
 
@@ -173,10 +179,10 @@ string FormatNupkgName(string version)
 }
 
 Task("Squirrel")
-   //.IsDependentOn("NuSpec")
+   .IsDependentOn("Nupkg")
   .Does(() =>
 {
-    FilePath nupkgPath = win10Nupgk + File(FormatNupkgName(versionText));
+    FilePath nupkgPath = win10Nupgk + File(FormatNupkgName(GetVersion()));
     //CleanDirectory(WpfClientSquirrelDeploy);
     Squirrel(nupkgPath, new SquirrelSettings 
         { 
@@ -186,23 +192,45 @@ Task("Squirrel")
     SignFiles(new FilePath[]{ win10OutputRoot + File("Setup.exe") });
 });
 
+string GetVersion()
+{
+	return XmlPeek(ui, "/Project/PropertyGroup/AssemblyVersion");
+}
+Task("IncVersion")
+	.Does(() => {
+		string version = GetVersion();
+		var parts = version.Split('.');
+		parts[2] = (int.Parse(parts[2])+1).ToString();
+		version = string.Join(".", parts);
+		XmlPoke(ui, "/Project/PropertyGroup/AssemblyVersion", version);
+		Information($"New version is {version}");
+	});
+
+Task("GetVersion")
+	.Does(() => {
+		string version = GetVersion();
+		Information($"Version is {version}");
+	});
 
 Task("Default")
     .Does(() => { 
+	Information($"thumbprint is {(EnvironmentVariable("SignatureCertThumbprint"))}");
         Information(
 @"AutoMasshTik build process
-IncBuild   .... increased version's build part (in AssemblyInfo.cs)
+IncVersion   .... increased version's build part (in AssemblyInfo.cs)
 SetVersion .... sets version based on NewVersion argument (1.2.3 format)
 GetVersion .... displays current version
 Build      .... builds solution
 Test       .... builds and tests solution
 Publish    .... publish
-Pack       .... builds, tests and packs for distributuion
+Nupkg      .... builds, tests and packs for distributuion
 SetTag     .... sets tag with current version to git repository
+Squirrel   .... Creates Squirell win10 deployment files
 Default    .... displays info
 
 Arguments
-	Runtime ... Win10*, Linux, OSX
+	Runtime    ... Win10*, Linux, OSX
+	Thumbprint ... Certificate thumbprint used to sign Setup.exe (by default taken from environment variable 'SignatureCertThumbprint'). When empty, no signature is performed.
 ");
 });
 
