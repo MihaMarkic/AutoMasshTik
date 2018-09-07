@@ -14,6 +14,7 @@ enum Runtime
 
 const string Configuration = "Release";
 var solutionRoot = Directory("./src/");
+var appIcon = solutionRoot + File("AutoMasshTik.ico");
 var solution = solutionRoot + File("AutoMasshTik.sln");
 var uiRoot = solutionRoot + Directory("AutoMasshTik.UI");
 var ui = uiRoot + File("AutoMasshTik.UI.csproj");
@@ -117,7 +118,25 @@ Task("Publish")
 			//NoBuild = true,
 		};
 		DotNetCorePublish(ui, settings);
+		AddIcon();
     });
+
+void AddIcon()
+{
+	var settings = new ProcessSettings
+	{
+		WorkingDirectory = win10DeploymentRoot.Path.FullPath,
+		Arguments = @"-open .\files\AutoMasshTik.exe -action add -resource ..\..\src\automasshtik.ico -save .\files\AutoMasshTik.exe -mask ICONGROUP,MAINICON,"
+	};
+	using (var process = StartAndReturnProcess(@"C:\Program Files (x86)\Resource Hacker\ResourceHacker.exe", settings))
+	{
+		process.WaitForExit();
+		if (process.GetExitCode() != 0)
+		{
+			throw new Exception("Failed to add icon");
+		}
+	}
+}
 
 void ImportExe(List<string> files, string releaseDirectory)
 {
@@ -179,7 +198,7 @@ string FormatNupkgName(string version)
 }
 
 Task("Squirrel")
-   .IsDependentOn("Nupkg")
+  .IsDependentOn("Nupkg")
   .Does(() =>
 {
     FilePath nupkgPath = win10Nupgk + File(FormatNupkgName(GetVersion()));

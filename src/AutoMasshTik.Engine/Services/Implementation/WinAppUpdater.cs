@@ -11,6 +11,7 @@ namespace AutoMasshTik.Engine.Services.Implementation
     public class WinAppUpdater : IAppUpdater
     {
         static readonly ILogger logger = LogManager.GetCurrentClassLogger();
+        const string UpdateUrl = "https://automasshtik.rthand.com/";
         static readonly string updateExe;
         static WinAppUpdater()
         {
@@ -25,7 +26,7 @@ namespace AutoMasshTik.Engine.Services.Implementation
                 return Task.Run(() =>
                 {
                     string textResult = null;
-                    var pi = new ProcessStartInfo(updateExe, "--checkForUpdate=https://misc.rthand.com/automasshtik");
+                    var pi = new ProcessStartInfo(updateExe, $"--checkForUpdate={UpdateUrl}");
                     pi.RedirectStandardOutput = true;
                     var p = new Process();
                     pi.UseShellExecute = false;
@@ -71,7 +72,7 @@ namespace AutoMasshTik.Engine.Services.Implementation
             {
                 return Task.Run(() =>
                 {
-                    var pi = new ProcessStartInfo(updateExe, "--update=https://misc.rthand.com/automasshtik");
+                    var pi = new ProcessStartInfo(updateExe, $"--update={UpdateUrl}");
                     pi.RedirectStandardOutput = true;
                     var p = new Process();
                     pi.UseShellExecute = false;

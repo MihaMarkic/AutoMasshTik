@@ -12,6 +12,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
 using PropertyChanged;
+using System.IO;
 
 namespace AutoMasshTik.UI
 {
@@ -69,6 +70,10 @@ namespace AutoMasshTik.UI
             Title = $"AutoMasshTik {NiceVersion}";
             Height = MinHeight = 300;
             Width = MinWidth = 830;
+            using (Stream stream = typeof(MainWindow).Assembly.GetManifestResourceStream("AutoMasshTik.UI.Assets.automasshtik.ico"))
+            {
+                Icon = new WindowIcon(stream);
+            }
             SolidColorBrush defaultBorderBrush = new SolidColorBrush(Colors.Black, opacity: .4);
             var defaultBorderThickness = new Thickness(.5);
             Styles.Add(
@@ -201,7 +206,12 @@ namespace AutoMasshTik.UI
                     Text = "New version available, restart to update",
                     HorizontalAlignment = HorizontalAlignment.Center,
                     [!TextBlock.IsVisibleProperty] = new Binding(nameof(ViewModel.NewVersionAvailable))
-                }.SetGridRow(3).SetGridColumn(2)
+                }.SetGridRow(3).SetGridColumn(2),
+                new TextBlock
+                {
+                    Text = "Made by Righthand & WLAN novagorica.eu",
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                }.SetGridRow(3).SetGridColumn(4)
                 );
         }
         protected override void HandleClosed()

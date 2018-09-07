@@ -2,11 +2,12 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>AutoMasshTik</id>
-    <version>0.9.3</version>
+    <version>1.0.0</version>
     <title>AutoMasshTik</title>
     <authors>Righthand</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Mass updater for MikroTik routerboards' firmware and packages</description>
+    <iconUrl>https://automasshtik.rthand.com/automasshtik.ico</iconUrl>
   </metadata>
   <files>
 	<file src=".\files\AutoMasshTik.exe" target="lib\net45\AutoMasshTik.exe" />
