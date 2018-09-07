@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{2C1BC224-5
 		..\appbuild.cake = ..\appbuild.cake
 		..\deployment\win10-x64\AutoMasshTik.nuspec.Template = ..\deployment\win10-x64\AutoMasshTik.nuspec.Template
 		..\build.ps1 = ..\build.ps1
+		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Setup", "Setup", "{6647C098-CFB8-42CB-A0B2-0B745BB2CD28}"
